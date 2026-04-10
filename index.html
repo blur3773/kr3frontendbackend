@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="manifest" href="/manifest.json">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#4285f4">
+    <link rel="apple-touch-icon" href="/icons/favicon-256x256.png">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <title>Менеджер задач</title>
+    <link rel="stylesheet" href="https://unpkg.com/chota@latest">
+    <link rel="icon" href="/icons/favicon.ico" sizes="16x16" type="image/ico">
+
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        header {
+            background: linear-gradient(135deg, #4285f4, #34a853);
+            color: white;
+            padding: 1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            margin: 0 0 1rem 0;
+            font-size: 1.8rem;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .tab {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+            font-size: 0.95rem;
+        }
+
+        .tab:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .tab.active {
+            background: white;
+            color: #4285f4;
+            font-weight: bold;
+        }
+
+        main {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 0.8rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .card.completed .task-text {
+            text-decoration: line-through;
+            opacity: 0.6;
+        }
+
+        .task-checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .task-text {
+            flex-grow: 1;
+        }
+
+        .task-delete {
+            background: #ff4444;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            font-size: 1rem;
+            line-height: 1;
+        }
+
+        .task-delete:hover {
+            background: #cc0000;
+        }
+
+        .notification-float {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: #4285f4;
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            z-index: 1000;
+            max-width: 300px;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        footer.is-center {
+            margin-top: 2rem;
+            padding: 1rem;
+        }
+
+        .button.success {
+            background: #34a853;
+            border-color: #34a853;
+        }
+
+        .button.error {
+            background: #ea4335;
+            border-color: #ea4335;
+        }
+
+        .no-break {
+            white-space: nowrap;
+        }
+
+        #loading {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+
+        .category-item {
+            background: white;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 0.8rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+        }
+
+        .category-item h3 {
+            margin: 0 0 0.5rem 0;
+            color: #4285f4;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #4285f4;
+            color: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            margin-left: 0.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Менеджер задач</h1>
+        <nav class="tabs is-center">
+            <button id="home-btn" class="tab active">Главная</button>
+            <button id="categories-btn" class="tab">Категории</button>
+            <button id="about-btn" class="tab">О приложении</button>
+        </nav>
+    </header>
+
+    <main id="app-content" class="container">
+        <div id="loading">Загрузка...</div>
+    </main>
+
+    <footer class="is-center">
+        <button id="enable-push" class="button success">Включить уведомления</button>
+        <button id="disable-push" class="button error" style="display:none;">Отключить уведомления</button>
+    </footer>
+
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>

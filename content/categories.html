@@ -1,0 +1,40 @@
+<div class="categories-content">
+    <h2 class="is-center">Категории задач</h2>
+    <div id="categories-list">
+        <div class="category-item">
+            <h3>Работа <span class="badge" id="count-work">0</span></h3>
+            <p>Задачи, связанные с работой и проектами</p>
+        </div>
+        <div class="category-item">
+            <h3>Личное <span class="badge" id="count-personal">0</span></h3>
+            <p>Личные дела и поручения</p>
+        </div>
+        <div class="category-item">
+            <h3>Учёба <span class="badge" id="count-study">0</span></h3>
+            <p>Учебные задачи и задания</p>
+        </div>
+        <div class="category-item">
+            <h3>Покупки <span class="badge" id="count-shopping">0</span></h3>
+            <p>Список покупок и приобретений</p>
+        </div>
+        <div class="category-item">
+            <h3>Без категории <span class="badge" id="count-other">0</span></h3>
+            <p>Задачи без указанной категории</p>
+        </div>
+    </div>
+
+    <div style="max-width: 400px; margin: 2rem auto 0;">
+        <h4>Добавить задачу с категорией</h4>
+        <form id="category-form">
+            <input type="text" id="category-task-input" placeholder="Текст задачи" required>
+            <select id="category-select">
+                <option value="work">Работа</option>
+                <option value="personal">Личное</option>
+                <option value="study">Учёба</option>
+                <option value="shopping">Покупки</option>
+                <option value="other">Без категории</option>
+            </select>
+            <button class="button primary" type="submit">Добавить</button>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,20 @@
+{
+  "name": "task-manager-pwa",
+  "version": "1.0.0",
+  "description": "Progressive Web Application for task management with offline support, real-time sync, and push notifications",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "generate-vapid": "npx web-push generate-vapid-keys"
+  },
+  "keywords": ["pwa", "service-worker", "websocket", "push-notifications", "task-manager"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "socket.io": "^4.7.2",
+    "web-push": "^3.6.6",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5"
+  }
+}

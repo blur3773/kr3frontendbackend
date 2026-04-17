@@ -6,6 +6,11 @@ const ASSETS = [
     '/index.html',
     '/app.js',
     '/manifest.json',
+    '/content/home.html',
+    '/content/about.html',
+    '/content/categories.html',
+    '/socket.io/socket.io.js',
+    '/icons/favicon.ico',
     '/icons/favicon-16x16.png',
     '/icons/favicon-32x32.png',
     '/icons/favicon-48x48.png',
@@ -51,12 +56,19 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
     const url = new URL(event.request.url);
 
+    if (event.request.method !== 'GET') {
+        return;
+    }
+
     if (url.origin !== location.origin) return;
 
     if (url.pathname.startsWith('/content/')) {
         event.respondWith(
             fetch(event.request)
                 .then(networkRes => {
+                    if (!networkRes || networkRes.status !== 200) {
+                        return networkRes;
+                    }
                     const resClone = networkRes.clone();
                     caches.open(DYNAMIC_CACHE_NAME).then(cache => {
                         cache.put(event.request, resClone);
@@ -77,7 +89,18 @@ self.addEventListener('fetch', event => {
                 if (cached) {
                     return cached;
                 }
-                return fetch(event.request);
+                return fetch(event.request).then(networkRes => {
+                    if (!networkRes || networkRes.status !== 200) {
+                        return networkRes;
+                    }
+
+                    const resClone = networkRes.clone();
+                    caches.open(DYNAMIC_CACHE_NAME).then(cache => {
+                        cache.put(event.request, resClone);
+                    });
+
+                    return networkRes;
+                });
             })
             .catch(() => {
                 if (event.request.destination === 'document') {
@@ -123,7 +146,7 @@ self.addEventListener('notificationclick', event => {
         const reminderId = notification.data.reminderId;
         console.log('[SW] Snooze clicked, reminderId:', reminderId);
         event.waitUntil(
-            fetch(`http://localhost:3001/snooze?reminderId=${reminderId}`, { method: 'POST' })
+            fetch(`/snooze?reminderId=${reminderId}`, { method: 'POST' })
                 .then(response => {
                     if (response.ok) {
                         console.log('[SW] Reminder snoozed');

@@ -32,6 +32,18 @@ const io = socketIo(server, {
     cors: { origin: '*', methods: ['GET', 'POST'] }
 });
 
+function sendPushNotification(subscription, payload) {
+    return webpush.sendNotification(subscription, payload).catch(err => {
+        const statusCode = err?.statusCode;
+        console.error('[Push] Error:', err);
+
+        if (statusCode === 404 || statusCode === 410) {
+            subscriptions = subscriptions.filter(sub => sub.endpoint !== subscription.endpoint);
+            console.log('[Push] Removed expired subscription. Total:', subscriptions.length);
+        }
+    });
+}
+
 io.on('connection', (socket) => {
     console.log('[WS] Client connected:', socket.id);
 
@@ -45,8 +57,7 @@ io.on('connection', (socket) => {
         });
 
         subscriptions.forEach(sub => {
-            webpush.sendNotification(sub, payload)
-                .catch(err => console.error('[Push] Error:', err));
+            sendPushNotification(sub, payload);
         });
     });
 
@@ -70,8 +81,7 @@ io.on('connection', (socket) => {
             });
 
             subscriptions.forEach(sub => {
-                webpush.sendNotification(sub, payload)
-                    .catch(err => console.error('[Push] Error:', err));
+                sendPushNotification(sub, payload);
             });
 
             reminders.delete(id);
@@ -88,6 +98,10 @@ io.on('connection', (socket) => {
 
 app.post('/subscribe', (req, res) => {
     const subscription = req.body;
+    if (!subscription || !subscription.endpoint) {
+        return res.status(400).json({ error: 'Invalid subscription' });
+    }
+
     const exists = subscriptions.some(sub => sub.endpoint === subscription.endpoint);
     if (!exists) {
         subscriptions.push(subscription);
@@ -126,8 +140,7 @@ app.post('/snooze', (req, res) => {
         });
 
         subscriptions.forEach(sub => {
-            webpush.sendNotification(sub, payload)
-                .catch(err => console.error('[Push] Error:', err));
+            sendPushNotification(sub, payload);
         });
 
         reminders.delete(reminderId);
